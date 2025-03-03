@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://x4vt0jbuyet8"]
+[gd_scene load_steps=58 format=3 uid="uid://css2ympqyh7op"]
 
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_body_3d.gd" id="1_rsftu"]
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_3d.gd" id="2_xdoe4"]
@@ -153,6 +153,8 @@ func _physics_process(delta):
 	last_rotation = get_parent().global_basis
 
 func _process(delta):
+	var plane_height = get_parent().global_position.y
+	
 	#allows us to flip if the camera will lag behind due to movements, or if it will look ahead due to movements.
 	if look_ahead_lag_behind_toggle:
 		#position camera relative to movement direction
@@ -165,6 +167,7 @@ func _process(delta):
 	else:
 		position = dir * get_parent().global_basis * follow_distance
 		rotation = (rot).get_euler() * rotation_effect_multiplier
+	
 	
 	
 "

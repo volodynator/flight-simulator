@@ -1,7 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://daj1puy51arhd"]
+[gd_scene load_steps=10 format=3 uid="uid://d018grxnd7x6i"]
 
-[ext_resource type="PackedScene" uid="uid://op2jpttcam11" path="res://test_scenes/aero_body_3d.tscn" id="1_tjius"]
-[ext_resource type="PackedScene" uid="uid://dtl1j545k44vq" path="res://test_scenes/pillars.tscn" id="2_bex3p"]
+[ext_resource type="PackedScene" uid="uid://smf6u3tuyv3x" path="res://test_scenes/pillars.tscn" id="2_bex3p"]
+[ext_resource type="PackedScene" uid="uid://b441vk6csa6a4" path="res://plane.tscn" id="2_qs7vu"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3pr32"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -59,5 +59,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30.4194, 1, -325.543)
 [node name="Pillars4" parent="." instance=ExtResource("2_bex3p")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.5745, 1, 432.927)
 
-[node name="AeroBody3D" parent="." instance=ExtResource("1_tjius")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 166.515, 0)
+[node name="AeroBody3D" parent="." instance=ExtResource("2_qs7vu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 466.338, 0)
