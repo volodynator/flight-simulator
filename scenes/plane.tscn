@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://b441vk6csa6a4"]
+[gd_scene load_steps=61 format=3 uid="uid://b441vk6csa6a4"]
 
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_body_3d.gd" id="1_rsftu"]
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_3d.gd" id="2_xdoe4"]
@@ -494,6 +494,9 @@ span = 1.214
 auto_aspect_ratio = true
 aspect_ratio = 4.04667
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_t44g5"]
+size = Vector3(1.44879, 1.44897, 2.11102)
+
 [node name="AeroBody3D" type="VehicleBody3D"]
 mass = 400.0
 center_of_mass_mode = 1
@@ -620,6 +623,23 @@ offset_left = 12.0
 offset_top = 89.0
 offset_right = 52.0
 offset_bottom = 112.0
+
+[node name="CarComponent" type="VehicleBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.00495, -0.0976939)
+mass = 400.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CarComponent"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.224396, -0.224487, 0.451813)
+shape = SubResource("BoxShape3D_t44g5")
+
+[node name="VehicleWheel3D" type="VehicleWheel3D" parent="CarComponent"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.808616, -1.12501)
+
+[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="CarComponent"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.2872, -0.808616, 0.758428)
+
+[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="CarComponent"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.287, -0.809, 0.758)
 
 [connection signal="visibility_changed" from="UserInterface/WindIndicator" to="UserInterface/WindIndicator" method="_on_visibility_changed"]
 

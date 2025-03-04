@@ -506,4 +506,6 @@ func changeWindState(new_state : WindState) -> void:
 	
 func resetWindState() -> void:
 	changeWindState(initial_wind_state)
-	
+
+func land():
+	pass
