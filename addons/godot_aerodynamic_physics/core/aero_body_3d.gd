@@ -141,6 +141,9 @@ var bank_angle := 0.0
 var heading := 0.0
 var inclination := 0.0
 
+# Wind System:
+@export var initial_wind_state: WindState
+var current_wind_state: WindState
 
 #debug
 var linear_velocity_vector : AeroDebugVector3D
@@ -181,6 +184,8 @@ func _init():
 	angular_damp_mode = RigidBody3D.DAMP_MODE_REPLACE
 	
 	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+	
+	current_wind_state = initial_wind_state
 
 func _enter_tree() -> void:
 	AeroNodeUtils.connect_signal_safe(self, "child_entered_tree", on_child_enter_tree, 0, true)
@@ -490,3 +495,15 @@ func _update_debug_scale() -> void:
 	angular_velocity_vector.width = debug_width
 	drag_debug_vector.width = debug_width
 	thrust_debug_vector.width = debug_width
+
+
+# Wind System:
+func changeWindState(new_state : WindState) -> void:
+	# Setting new state
+	current_wind_state = new_state
+	# Applying new wind to the plane
+	current_wind_state.apply_wind(self)
+	
+func resetWindState() -> void:
+	changeWindState(initial_wind_state)
+	

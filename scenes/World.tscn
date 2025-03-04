@@ -1,0 +1,62 @@
+[gd_scene load_steps=13 format=3 uid="uid://dqwt7egqwycl1"]
+
+[ext_resource type="PackedScene" uid="uid://b441vk6csa6a4" path="res://scenes/plane.tscn" id="1_uhpkn"]
+[ext_resource type="Script" path="res://scripts/wind/NoWind.gd" id="2_1b6i0"]
+[ext_resource type="Script" path="res://scripts/wind/WindArea.gd" id="3_tl74s"]
+[ext_resource type="PackedScene" uid="uid://smf6u3tuyv3x" path="res://test_scenes/pillars.tscn" id="4_elyd3"]
+[ext_resource type="Script" path="res://scripts/wind/StrongWind.gd" id="4_w7clw"]
+
+[sub_resource type="Environment" id="Environment_4y7y0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fxaan"]
+size = Vector3(5000, 2, 5000)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68u20"]
+albedo_color = Color(0.352941, 0.564706, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_4pfca"]
+material = SubResource("StandardMaterial3D_68u20")
+size = Vector3(5000, 2, 5000)
+
+[sub_resource type="Resource" id="Resource_lc74h"]
+script = ExtResource("2_1b6i0")
+
+[sub_resource type="Resource" id="Resource_1qxsa"]
+script = ExtResource("4_w7clw")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l88q4"]
+size = Vector3(500, 500, 500)
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_4y7y0")
+
+[node name="Ground" type="StaticBody3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WorldEnvironment/Ground"]
+shape = SubResource("BoxShape3D_fxaan")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/Ground"]
+mesh = SubResource("BoxMesh_4pfca")
+
+[node name="Plane" parent="." instance=ExtResource("1_uhpkn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 500, 0)
+initial_wind_state = SubResource("Resource_lc74h")
+
+[node name="Pillars" parent="." instance=ExtResource("4_elyd3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 0, 0)
+
+[node name="Pillars2" parent="." instance=ExtResource("4_elyd3")]
+
+[node name="WindArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
+script = ExtResource("3_tl74s")
+wind_state = SubResource("Resource_1qxsa")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WindArea"]
+shape = SubResource("BoxShape3D_l88q4")
+
+[connection signal="body_entered" from="WindArea" to="WindArea" method="_on_body_entered"]
+[connection signal="body_exited" from="WindArea" to="WindArea" method="_on_body_exited"]

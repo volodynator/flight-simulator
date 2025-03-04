@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://d018grxnd7x6i"]
+[gd_scene load_steps=12 format=3 uid="uid://d018grxnd7x6i"]
 
+[ext_resource type="Script" path="res://test_scenes/main.gd" id="1_slwr5"]
 [ext_resource type="PackedScene" uid="uid://smf6u3tuyv3x" path="res://test_scenes/pillars.tscn" id="2_bex3p"]
-[ext_resource type="PackedScene" uid="uid://b441vk6csa6a4" path="res://plane.tscn" id="2_qs7vu"]
+[ext_resource type="PackedScene" uid="uid://b441vk6csa6a4" path="res://scenes/plane.tscn" id="2_qs7vu"]
+[ext_resource type="PackedScene" path="res://Mob_Airplane.tscn" id="4_sjc1c"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3pr32"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -29,7 +31,9 @@ noise = SubResource("FastNoiseLite_8llo8")
 albedo_color = Color(0.246682, 0.450129, 0.235876, 1)
 albedo_texture = SubResource("NoiseTexture2D_ccx6r")
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" node_paths=PackedStringArray("plane")]
+script = ExtResource("1_slwr5")
+plane = NodePath("AeroBody3D")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_cg6fh")
@@ -61,3 +65,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.5745, 1, 432.927)
 
 [node name="AeroBody3D" parent="." instance=ExtResource("2_qs7vu")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 466.338, 0)
+
+[node name="Mob" parent="." instance=ExtResource("4_sjc1c")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 100, 100)
