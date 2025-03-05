@@ -145,6 +145,12 @@ var inclination := 0.0
 @export var initial_wind_state: WindState
 var current_wind_state: WindState
 
+# Seeds System:
+var can_drop : bool
+@export var drop_interval : float
+@export var seed_size: Vector3 = Vector3(50.0, 50.0, 50.0)
+@export var seed_color: Color = Color.CHOCOLATE 
+
 #debug
 var linear_velocity_vector : AeroDebugVector3D
 var angular_velocity_vector : AeroDebugVector3D
@@ -186,6 +192,7 @@ func _init():
 	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
 	
 	current_wind_state = initial_wind_state
+	can_drop = true
 
 func _enter_tree() -> void:
 	AeroNodeUtils.connect_signal_safe(self, "child_entered_tree", on_child_enter_tree, 0, true)
@@ -238,6 +245,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _physics_process(delta : float) -> void:
 	if show_debug and update_debug:
 		_update_debug()
+	if InputMap.has_action("drop") and Input.is_action_pressed("drop"):
+		drop_seeds()
+
 
 var _integrate_forces_time : float = 0.0
 func _integrate_forces(state : PhysicsDirectBodyState3D) -> void:
@@ -507,5 +517,49 @@ func changeWindState(new_state : WindState) -> void:
 func resetWindState() -> void:
 	changeWindState(initial_wind_state)
 
-func land():
-	pass
+func drop_seeds() -> void:
+	if not can_drop:
+		return
+	
+	var seeds_area := create_seeds_area()
+	
+	can_drop = false
+	await get_tree().create_timer(drop_interval).timeout
+	
+	seeds_area.queue_free()
+	can_drop = true
+
+func create_seeds_area() -> Area3D:
+	var seeds_area := Area3D.new()
+	seeds_area.add_child(create_collision_shape())
+	seeds_area.add_child(create_decal())
+	
+	add_child(seeds_area, false, Node.INTERNAL_MODE_BACK)
+	print("Создано поле семян")
+	return seeds_area
+
+func create_collision_shape() -> CollisionShape3D:
+	var collision_node := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = seed_size
+	collision_node.shape = shape
+	return collision_node
+
+func create_mesh_visual() -> MeshInstance3D:
+	var mesh_instance := MeshInstance3D.new()
+	var mesh := BoxMesh.new()
+	var material := StandardMaterial3D.new()
+	
+	mesh.size = seed_size
+	material.albedo_color = seed_color
+	mesh.material = material
+	
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+func create_decal() -> Decal:
+	var decal := Decal.new()
+	decal.texture_albedo = preload("res://textures/texture.png")
+	decal.size = Vector3(seed_size.x, 1, seed_size.z)
+	decal.global_transform.origin.y = 0.1
+	return decal

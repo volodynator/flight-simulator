@@ -509,6 +509,9 @@ update_debug = true
 show_drag_vectors = false
 show_linear_velocity = false
 initial_wind_state = SubResource("Resource_lylr0")
+drop_interval = 5.0
+seed_size = null
+seed_color = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0141702, -1.24207, 0.304971)

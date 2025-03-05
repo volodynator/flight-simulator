@@ -48,6 +48,8 @@ shadow_enabled = true
 [node name="Plane" parent="." instance=ExtResource("1_uhpkn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 initial_wind_state = SubResource("Resource_lc74h")
+seed_size = Vector3(50, 50, 50)
+seed_color = Color(0.823529, 0.411765, 0.117647, 1)
 
 [node name="Pillars" parent="." instance=ExtResource("4_elyd3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 0, 0)
