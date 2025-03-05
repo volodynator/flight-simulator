@@ -1,6 +1,7 @@
-[gd_scene load_steps=61 format=3 uid="uid://b441vk6csa6a4"]
+[gd_scene load_steps=62 format=3 uid="uid://b441vk6csa6a4"]
 
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_body_3d.gd" id="1_rsftu"]
+[ext_resource type="Script" path="res://scripts/wind/NoWind.gd" id="2_7eeq8"]
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_3d.gd" id="2_xdoe4"]
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/utils/pid.gd" id="3_lqxip"]
 [ext_resource type="Script" path="res://addons/godot_aerodynamic_physics/core/aero_influencer_3d/aero_surface_3d/manual_aero_surface_3d/manual_aero_surface_config.gd" id="3_unwgd"]
@@ -14,8 +15,11 @@
 [ext_resource type="PackedScene" uid="uid://bhu44cmhc2dxh" path="res://assets/plane_model/scene.gltf" id="12_mjgs4"]
 [ext_resource type="Script" path="res://scripts/UI/color_rect.gd" id="13_qxc5j"]
 
+[sub_resource type="Resource" id="Resource_lylr0"]
+script = ExtResource("2_7eeq8")
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_7lntn"]
-size = Vector3(12.8211, 1, 8.43514)
+size = Vector3(1.33016, 1.49619, 2.6947)
 
 [sub_resource type="Curve" id="Curve_3e0b6"]
 bake_resolution = 21
@@ -404,7 +408,7 @@ input = 0.0
 min_limit = 0.0
 max_limit = 1.0
 positive_event = &""
-negative_event = &""
+negative_event = &"brake"
 enable_smoothing = false
 smoothing_rate = 1.0
 cumulative_positive_event = &""
@@ -494,9 +498,6 @@ span = 1.214
 auto_aspect_ratio = true
 aspect_ratio = 4.04667
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_t44g5"]
-size = Vector3(1.44879, 1.44897, 2.11102)
-
 [node name="AeroBody3D" type="VehicleBody3D"]
 mass = 400.0
 center_of_mass_mode = 1
@@ -507,9 +508,10 @@ script = ExtResource("1_rsftu")
 update_debug = true
 show_drag_vectors = false
 show_linear_velocity = false
+initial_wind_state = SubResource("Resource_lylr0")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0554351, 0, 2.05435)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0141702, -1.24207, 0.304971)
 shape = SubResource("BoxShape3D_7lntn")
 
 [node name="WingL" type="Node3D" parent="."]
@@ -624,22 +626,35 @@ offset_top = 89.0
 offset_right = 52.0
 offset_bottom = 112.0
 
-[node name="CarComponent" type="VehicleBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.00495, -0.0976939)
-mass = 400.0
+[node name="VehicleWheel3D" type="VehicleWheel3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -1.83919, -1.33752)
+use_as_steering = true
+wheel_radius = 0.3
+wheel_friction_slip = 1.0
+suspension_stiffness = 200.0
+suspension_max_force = 10000.0
+damping_compression = 0.5
+damping_relaxation = 0.8
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CarComponent"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.224396, -0.224487, 0.451813)
-shape = SubResource("BoxShape3D_t44g5")
+[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.2872, -1.83919, 0.907279)
+use_as_traction = true
+wheel_radius = 0.3
+wheel_friction_slip = 1.0
+suspension_stiffness = 50.0
+suspension_max_force = 10000.0
+damping_compression = 0.5
+damping_relaxation = 0.8
 
-[node name="VehicleWheel3D" type="VehicleWheel3D" parent="CarComponent"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.808616, -1.12501)
-
-[node name="VehicleWheel3D2" type="VehicleWheel3D" parent="CarComponent"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -1.2872, -0.808616, 0.758428)
-
-[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="CarComponent"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.287, -0.809, 0.758)
+[node name="VehicleWheel3D3" type="VehicleWheel3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1.287, -1.83958, 0.906851)
+use_as_traction = true
+wheel_radius = 0.3
+wheel_friction_slip = 1.0
+suspension_stiffness = 50.0
+suspension_max_force = 10000.0
+damping_compression = 0.5
+damping_relaxation = 0.8
 
 [connection signal="visibility_changed" from="UserInterface/WindIndicator" to="UserInterface/WindIndicator" method="_on_visibility_changed"]
 

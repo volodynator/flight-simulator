@@ -41,6 +41,10 @@ shape = SubResource("BoxShape3D_fxaan")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/Ground"]
 mesh = SubResource("BoxMesh_4pfca")
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, -0.214735, 0.976672, 0, -0.976672, -0.214735, 182.011, 323.474, 0.75)
+shadow_enabled = true
+
 [node name="Plane" parent="." instance=ExtResource("1_uhpkn")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 initial_wind_state = SubResource("Resource_lc74h")
