@@ -148,8 +148,7 @@ var current_wind_state: WindState
 # Seeds System:
 var can_drop : bool
 @export var drop_interval : float
-@export var seed_size: Vector3 = Vector3(50.0, 50.0, 50.0)
-@export var seed_color: Color = Color.CHOCOLATE 
+var seeding_component: SeedingComponent
 
 #debug
 var linear_velocity_vector : AeroDebugVector3D
@@ -218,6 +217,10 @@ func _ready() -> void:
 	add_child(thrust_debug_vector, INTERNAL_MODE_FRONT)
 	mass_debug_point.add_child(linear_velocity_vector, INTERNAL_MODE_FRONT)
 	mass_debug_point.add_child(angular_velocity_vector, INTERNAL_MODE_FRONT)
+	
+	seeding_component = SeedingComponent.new()
+	seeding_component.plane = self
+	add_child(seeding_component)
 	
 	if Engine.is_editor_hint():
 		update_configuration_warnings()
@@ -521,45 +524,11 @@ func drop_seeds() -> void:
 	if not can_drop:
 		return
 	
-	var seeds_area := create_seeds_area()
+	var area : Area3D = seeding_component.create_seeding_area()
 	
 	can_drop = false
 	await get_tree().create_timer(drop_interval).timeout
+	seeding_component.delete_seeding_area(area)
 	
-	seeds_area.queue_free()
 	can_drop = true
-
-func create_seeds_area() -> Area3D:
-	var seeds_area := Area3D.new()
-	seeds_area.add_child(create_collision_shape())
-	seeds_area.add_child(create_decal())
 	
-	add_child(seeds_area, false, Node.INTERNAL_MODE_BACK)
-	print("Создано поле семян")
-	return seeds_area
-
-func create_collision_shape() -> CollisionShape3D:
-	var collision_node := CollisionShape3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = seed_size
-	collision_node.shape = shape
-	return collision_node
-
-func create_mesh_visual() -> MeshInstance3D:
-	var mesh_instance := MeshInstance3D.new()
-	var mesh := BoxMesh.new()
-	var material := StandardMaterial3D.new()
-	
-	mesh.size = seed_size
-	material.albedo_color = seed_color
-	mesh.material = material
-	
-	mesh_instance.mesh = mesh
-	return mesh_instance
-
-func create_decal() -> Decal:
-	var decal := Decal.new()
-	decal.texture_albedo = preload("res://textures/texture.png")
-	decal.size = Vector3(seed_size.x, 1, seed_size.z)
-	decal.global_transform.origin.y = 0.1
-	return decal

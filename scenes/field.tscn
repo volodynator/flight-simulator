@@ -1,0 +1,38 @@
+[gd_scene load_steps=9 format=3 uid="uid://ertbnhuat4bq"]
+
+[ext_resource type="Script" path="res://scripts/seeding/field.gd" id="1_uhiis"]
+[ext_resource type="Texture2D" uid="uid://iiy1yhoyjc1s" path="res://textures/Vol_19_4_Dirt_Base_Color.png" id="2_ynyai"]
+[ext_resource type="Script" path="res://scripts/seeding/field_status.gd" id="3_ny13y"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u7khx"]
+size = Vector3(100, 2, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wi8oh"]
+albedo_texture = ExtResource("2_ynyai")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_hwgph"]
+material = SubResource("StandardMaterial3D_wi8oh")
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_drqyk"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_in0ht"]
+material = SubResource("StandardMaterial3D_drqyk")
+size = Vector2(100, 100)
+
+[node name="Area3D" type="Area3D"]
+script = ExtResource("1_uhiis")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_u7khx")
+
+[node name="Field Surface" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_hwgph")
+
+[node name="Field Status" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21636, 0)
+transparency = 0.6
+mesh = SubResource("PlaneMesh_in0ht")
+script = ExtResource("3_ny13y")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

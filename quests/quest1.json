@@ -1,0 +1,10 @@
+{
+	"Requestor" : "Nigel",
+	"Title" : "First blood",
+	"Description" : "Nigel asked for help with seeding",
+	"Type" : "Seeding",
+	"FieldID" : "1",
+	"DialogNew" : "Hey, could you please help me with seeding",
+	"DialogTaken" : "When you will do your job?",
+	"DialogReady" : "Thank you"
+}

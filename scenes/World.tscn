@@ -1,10 +1,17 @@
-[gd_scene load_steps=13 format=3 uid="uid://dqwt7egqwycl1"]
+[gd_scene load_steps=18 format=3 uid="uid://dqwt7egqwycl1"]
 
+[ext_resource type="PackedScene" uid="uid://h1a25ixi2j5q" path="res://assets/BARN_green_color_fence.glb" id="1_a5k2m"]
 [ext_resource type="PackedScene" uid="uid://b441vk6csa6a4" path="res://scenes/plane.tscn" id="1_uhpkn"]
 [ext_resource type="Script" path="res://scripts/wind/NoWind.gd" id="2_1b6i0"]
-[ext_resource type="Script" path="res://scripts/wind/WindArea.gd" id="3_tl74s"]
+[ext_resource type="PackedScene" uid="uid://cywo68t5r4hac" path="res://assets/BARN_orange_color.glb" id="2_8x340"]
+[ext_resource type="PackedScene" uid="uid://bsg3ywbtany4r" path="res://assets/BARN_orange_fence.glb" id="3_2es3k"]
 [ext_resource type="PackedScene" uid="uid://smf6u3tuyv3x" path="res://test_scenes/pillars.tscn" id="4_elyd3"]
-[ext_resource type="Script" path="res://scripts/wind/StrongWind.gd" id="4_w7clw"]
+[ext_resource type="PackedScene" uid="uid://b4dlf0mtg6fca" path="res://assets/BARN_TOP_color.glb" id="4_h0moi"]
+[ext_resource type="PackedScene" uid="uid://ertbnhuat4bq" path="res://scenes/field.tscn" id="4_ofbtn"]
+[ext_resource type="PackedScene" uid="uid://b8xkdtlvt52ui" path="res://assets/cow.glb" id="5_noe4a"]
+[ext_resource type="PackedScene" uid="uid://dsdjgihkig5cc" path="res://assets/fence.glb" id="6_87c6b"]
+[ext_resource type="PackedScene" uid="uid://b60xedt1f54mi" path="res://assets/BARN_green_color.glb" id="10_1igst"]
+[ext_resource type="PackedScene" uid="uid://c2durob2lvuby" path="res://scenes/QuestArea.tscn" id="12_4eqb0"]
 
 [sub_resource type="Environment" id="Environment_4y7y0"]
 
@@ -12,7 +19,7 @@
 size = Vector3(5000, 2, 5000)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_68u20"]
-albedo_color = Color(0.352941, 0.564706, 0, 1)
+albedo_color = Color(0.352941, 0.458824, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_4pfca"]
 material = SubResource("StandardMaterial3D_68u20")
@@ -20,12 +27,6 @@ size = Vector3(5000, 2, 5000)
 
 [sub_resource type="Resource" id="Resource_lc74h"]
 script = ExtResource("2_1b6i0")
-
-[sub_resource type="Resource" id="Resource_1qxsa"]
-script = ExtResource("4_w7clw")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_l88q4"]
-size = Vector3(500, 500, 500)
 
 [node name="World" type="Node3D"]
 
@@ -41,28 +42,46 @@ shape = SubResource("BoxShape3D_fxaan")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="WorldEnvironment/Ground"]
 mesh = SubResource("BoxMesh_4pfca")
 
+[node name="BARN_green_color_fence" parent="WorldEnvironment/Ground" instance=ExtResource("1_a5k2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 563.132, 1, 380.154)
+
+[node name="BARN_orange_color" parent="WorldEnvironment/Ground" instance=ExtResource("2_8x340")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 591.889, 1, 333.735)
+
+[node name="BARN_orange_fence" parent="WorldEnvironment/Ground" instance=ExtResource("3_2es3k")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 581.152, 1, 300.346)
+
+[node name="BARN_TOP_color" parent="WorldEnvironment/Ground" instance=ExtResource("4_h0moi")]
+transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, 555.886, 1, 328.415)
+
+[node name="cow" parent="WorldEnvironment/Ground" instance=ExtResource("5_noe4a")]
+transform = Transform3D(0.0471064, 0, 0.99889, 0, 1, 0, -0.99889, 0, 0.0471064, 586.086, 1, 312.989)
+
+[node name="fence" parent="WorldEnvironment/Ground" instance=ExtResource("6_87c6b")]
+transform = Transform3D(-0.649435, 0, 0.760417, 0, 1, 0, -0.760417, 0, -0.649435, 545.962, 1, 308.139)
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
 transform = Transform3D(1, 0, 0, 0, -0.214735, 0.976672, 0, -0.976672, -0.214735, 182.011, 323.474, 0.75)
 shadow_enabled = true
 
 [node name="Plane" parent="." instance=ExtResource("1_uhpkn")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+transform = Transform3D(-0.130474, 0, -0.991452, 0, 1, 0, 0.991452, 0, -0.130474, 523.801, 3, 279.947)
 initial_wind_state = SubResource("Resource_lc74h")
-seed_size = Vector3(50, 50, 50)
-seed_color = Color(0.823529, 0.411765, 0.117647, 1)
 
 [node name="Pillars" parent="." instance=ExtResource("4_elyd3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1000, 0, 0)
 
 [node name="Pillars2" parent="." instance=ExtResource("4_elyd3")]
 
-[node name="WindArea" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 250, 0)
-script = ExtResource("3_tl74s")
-wind_state = SubResource("Resource_1qxsa")
+[node name="Area3D" parent="." instance=ExtResource("4_ofbtn")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 508.744, 0.1, 378.043)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WindArea"]
-shape = SubResource("BoxShape3D_l88q4")
+[node name="Area3D2" parent="." instance=ExtResource("4_ofbtn")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 508.744, 0.1, 358.201)
 
-[connection signal="body_entered" from="WindArea" to="WindArea" method="_on_body_entered"]
-[connection signal="body_exited" from="WindArea" to="WindArea" method="_on_body_exited"]
+[node name="BARN_green_color" parent="." instance=ExtResource("10_1igst")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 578.288, 0, 393.271)
+
+[node name="QuestArea" parent="." instance=ExtResource("12_4eqb0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 544.373, 0.136849, 275.881)
+questID = "1"

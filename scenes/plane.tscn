@@ -131,74 +131,68 @@ yaw_config = SubResource("Resource_02l0i")
 [sub_resource type="GDScript" id="GDScript_8p6bo"]
 script/source = "extends Camera3D
 
-@export var follow_distance : float = 12.0
+@export var follow_distance : float = 50.0
 @export var height_offset : float = 3.0
-@export var transition_speed : float = 100.0
-@export var rotation_effect_multiplier : float = 3.0
-@export var look_ahead_lag_behind_toggle : bool = true
+@export var mouse_sensitivity : float = 0.005
+@export var rotation_speed : float = 5.0
+@export var top_down_view : bool = false
 
-@onready var last_pos : Vector3 = get_parent().global_position
-var dir : Vector3
-@onready var last_rotation : Basis = get_parent().global_basis
-var rot : Basis
+var yaw : float = 0.0
+var pitch : float = 0.5
+var is_mouse_captured : bool = false
+
+@onready var plane : Node3D = get_parent()
 @onready var coordinatesLabel : Label = get_node(\"../UserInterface/Coordinates\")
 @onready var windIndicator : ColorRect = get_node(\"../UserInterface/WindIndicator\")
 @onready var windLabel : Label = get_node(\"../UserInterface/WindLabel\")
 
+func _ready():
+	# Установите начальное положение камеры
+	_update_camera_position()
+
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			is_mouse_captured = event.pressed
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED if is_mouse_captured else Input.MOUSE_MODE_VISIBLE)
+	
+	if event is InputEventMouseMotion and is_mouse_captured:
+		yaw -= event.relative.x * mouse_sensitivity
+		pitch -= event.relative.y * mouse_sensitivity
+		pitch = clamp(pitch, -1.5, 1.5)
+
 func _physics_process(delta):
-	#calculate the direction of movement
-	var movement_this_step = get_parent().global_position - last_pos
-	dir = movement_this_step.normalized()
-	var movement_speed : float = movement_this_step.length() / delta
+	if Input.is_action_just_pressed(\"top_view\"):
+		top_down_view = !top_down_view
 	
-	#smooths camera movement at lower speeds
-	var lerp_factor : float = clamp(remap(movement_speed, 0, transition_speed, 0, 1), 0, 1)
-	dir = lerp(Vector3(0, 0, -1) * get_parent().global_basis.inverse(), dir, lerp_factor)
+	_update_camera_position()
+
+func _update_camera_position():
+	var plane_pos = plane.global_position
+	var plane_basis = plane.global_transform.basis
 	
-	#get change in rotation
-	var rotation_this_step = get_parent().global_basis.inverse() * last_rotation
-	rot = rotation_this_step
-	
-	last_pos = get_parent().global_position
-	last_rotation = get_parent().global_basis
+	if top_down_view:
+		global_position = plane_pos + Vector3(0, height_offset + follow_distance, 0)
+		global_transform = global_transform.looking_at(plane_pos, Vector3.BACK)
+	else:
+		var camera_offset = plane_basis.x * follow_distance * sin(yaw) * cos(pitch) + \\
+							plane_basis.y * (follow_distance * sin(pitch) + height_offset) + \\
+							plane_basis.z * follow_distance * cos(yaw) * cos(pitch)
+		
+		global_position = plane_pos + camera_offset
+		global_transform = global_transform.looking_at(plane_pos, plane_basis.y)
 
 func _process(delta):
-	
-	var plane_x = get_parent().global_position.x
-	var plane_y = get_parent().global_position.y
-	var plane_z = get_parent().global_position.z
-	
-	var wind : Vector3 = get_parent().wind
-	
+	var plane_pos = plane.global_position
+	var wind : Vector3 = plane.wind
 	
 	if coordinatesLabel:
-		coordinatesLabel.text = \"Position: X: %.1f m, Y: %.1f, Z: %.1f\" % [plane_x, plane_y, plane_z]
+		coordinatesLabel.text = \"Position: X: %.1f m, Y: %.1f, Z: %.1f\" % [plane_pos.x, plane_pos.y, plane_pos.z]
 	
 	if windLabel:
 		windLabel.text = \"Wind: X: %.1f m, Y: %.1f, Z: %.1f\" % [wind.x, wind.y, wind.z]
-
-
-	if (get_parent().wind):
-		windIndicator.visible = true
-	else: 
-		windIndicator.visible = false
-
-
-	#allows us to flip if the camera will lag behind due to movements, or if it will look ahead due to movements.
-	if look_ahead_lag_behind_toggle:
-		#position camera relative to movement direction
-		#makes the camera appear to \"lag behind\" the airplane
-		#in other words, the camera responds psudo-physically to the airplane's movements
-		position = -dir * get_parent().global_basis * follow_distance + Vector3.UP * height_offset
-		
-		#use change in rotation to make camera move in response to plane movements
-		rotation = (rot).get_euler() * -rotation_effect_multiplier
-	else:
-		position = dir * get_parent().global_basis * follow_distance + Vector3.UP * height_offset
-		rotation = (rot).get_euler() * rotation_effect_multiplier
-
-
 	
+	windIndicator.visible = wind != Vector3.ZERO
 "
 
 [sub_resource type="Resource" id="Resource_bqiga"]
@@ -510,8 +504,6 @@ show_drag_vectors = false
 show_linear_velocity = false
 initial_wind_state = SubResource("Resource_lylr0")
 drop_interval = 5.0
-seed_size = null
-seed_color = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0141702, -1.24207, 0.304971)
